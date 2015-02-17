@@ -30,7 +30,7 @@ RUN mkdir /etc/fluent
 ADD config/fluent.conf /etc/fluent/
 ADD fluentd.sh /etc/service/fluentd/run
 
-ADD config/nginx.conf /etc/nginx/
+ADD config/nginx-json.conf /etc/nginx/conf.d/
 
 # ENTRYPOINT ["/usr/local/bin/fluentd", "-c", "/etc/fluent/fluent.conf"]
 
