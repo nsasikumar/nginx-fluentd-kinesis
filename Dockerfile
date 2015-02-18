@@ -16,7 +16,7 @@ RUN gem install bundler --no-ri --no-rdoc
 #RUN gem install fluentd --no-ri --no-rdoc
 
 # install git
-RUN apt-get -y install git
+RUN apt-get -y install git logrotate
 
 # install Kinesis plugin
 RUN ["git", "clone", "https://github.com/awslabs/aws-fluent-plugin-kinesis.git"]
@@ -28,10 +28,11 @@ RUN ["rake", "install"]
 RUN mkdir /etc/fluent
 
 ADD config/fluent.conf /etc/fluent/
-ADD fluentd.sh /etc/service/fluentd/run
-
 ADD config/nginx-json.conf /etc/nginx/conf.d/
 
-# ENTRYPOINT ["/usr/local/bin/fluentd", "-c", "/etc/fluent/fluent.conf"]
+# Logrotate
+ADD config/logrotate-nginx.conf /etc/logrotate.d/nginx
+RUN chmod 0644 /etc/logrotate.d/nginx
+RUN mv /etc/cron.daily/logrotate /etc/cron.hourly/
 
-# RUN ["gem", "install", "fluent-plugin-record-reformer", "--no-rdoc", "--no-ri"]
+ADD fluentd.sh /etc/service/fluentd/run
